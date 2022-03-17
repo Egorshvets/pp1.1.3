@@ -17,15 +17,10 @@ public class Util {
             Driver driver = new com.mysql.cj.jdbc.Driver();
             DriverManager.registerDriver(driver);
             connection = DriverManager.getConnection( url, userName ,password);
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("CREATE schema if not exists UsersZadaniye");  //создаю свою, чтобы не мусорить
-            statement.execute("USE UsersZadaniye");
-            statement.execute("set autocommit = 0");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    // реализуйте настройку соеденения с БД
 
     public Connection getConnection() {
         return connection;
@@ -33,8 +28,6 @@ public class Util {
 
     public void closeConnection() {
         try {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("DROP schema if exists UsersZadaniye");  // убираю за собой
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
