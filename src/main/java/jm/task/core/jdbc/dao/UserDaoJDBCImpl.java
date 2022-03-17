@@ -7,11 +7,12 @@ import jm.task.core.jdbc.util.Util;
 import java.sql.*;
 import java.util.*;
 
-public class UserDaoJDBCImpl implements UserDao, UserService {
+public class UserDaoJDBCImpl implements UserDao {
 
-    private Util util = new Util();
+    private Util util;
 
     public UserDaoJDBCImpl() {
+        util = new Util();
         autoCommitOff();
         createSchema();
     }

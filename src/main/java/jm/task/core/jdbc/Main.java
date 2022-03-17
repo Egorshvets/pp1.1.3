@@ -18,7 +18,7 @@ public class Main {
             System.out.println(user);         //autoCommit отключается в конструкторе userDaoJDBC
         }                                     //в Util только создается соединение
         userService.cleanUsersTable();        //commit вызывается в конце запроса в каждом из методов, работающих с БД
-        userService.dropUsersTable();         //теперь UserServiceImpl extends UserDaoJDBC; UserDaoJDBC implements UserDao, UserService
-        userService.closeConnection();
+        userService.dropUsersTable();         //теперь UserServiceImpl implements UserService; UserDaoJDBC implements UserDao
+        userService.closeConnection();        //UserServiceImpl работает с методами UserDaoJDBC через объект
     }
 }
