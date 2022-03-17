@@ -15,7 +15,7 @@ public class Main {
         userService.saveUser("Anfisa", "Aslanovna" , (byte) 25);
         List<User> users = userService.getAllUsers();
         for(User user : users) {
-            System.out.println(user);         //autoCommit отключается в конструкторе userDao
+            System.out.println(user);         //autoCommit отключается в конструкторе userDaoJDBC
         }                                     //в Util только создается соединение
         userService.cleanUsersTable();        //commit вызывается в конце запроса в каждом из методов, работающих с БД
         userService.dropUsersTable();         //теперь UserServiceImpl extends UserDaoJDBC; UserDaoJDBC implements UserDao, UserService
