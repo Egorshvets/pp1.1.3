@@ -25,6 +25,7 @@ public class UserDaoJDBCImpl implements UserDao {
             commit();
         } catch (SQLException e) {
             System.out.println("Table 'users' already exists");
+            rollBack();
             cleanUsersTable();
         }
     }
@@ -36,6 +37,7 @@ public class UserDaoJDBCImpl implements UserDao {
             commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            rollBack();
         }
     }
 
@@ -48,6 +50,7 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("User с именем – " + name + " добавлен в базу данных");
         } catch (SQLException e) {
             e.printStackTrace();
+            rollBack();
         }
     }
 
@@ -58,6 +61,7 @@ public class UserDaoJDBCImpl implements UserDao {
             commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            rollBack();
         }
     }
 
@@ -75,6 +79,7 @@ public class UserDaoJDBCImpl implements UserDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            rollBack();
         }
         return users;
     }
@@ -85,12 +90,22 @@ public class UserDaoJDBCImpl implements UserDao {
             commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            rollBack();
         }
     }
 
     public void commit() {
         try {
             util.getConnection().commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            rollBack();
+        }
+    }
+
+    public void rollBack() {
+        try {
+            util.getConnection().rollback();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,6 +119,7 @@ public class UserDaoJDBCImpl implements UserDao {
             commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            rollBack();
         }
     }
 
