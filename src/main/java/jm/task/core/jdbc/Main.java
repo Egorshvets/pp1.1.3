@@ -14,11 +14,11 @@ public class Main {
         userService.saveUser("Arnold", "Shwarcneger", (byte) 70);
         userService.saveUser("Anfisa", "Aslanovna" , (byte) 25);
         List<User> users = userService.getAllUsers();
-        for(User user : users) {              //добавил rollback метод, вызываю в случае ошибки после печати стэктрейса
-            System.out.println(user);         //autoCommit отключается в конструкторе userDaoJDBC
-        }                                     //в Util только создается соединение
-        userService.cleanUsersTable();        //commit вызывается в конце запроса в каждом из методов, работающих с БД
-        userService.dropUsersTable();         //теперь UserServiceImpl implements UserService; UserDaoJDBC implements UserDao
-        userService.closeConnection();        //UserServiceImpl работает с методами UserDaoJDBC через объект
+        for(User user : users) {
+            System.out.println(user);
+        }
+        userService.cleanUsersTable();
+        userService.dropUsersTable();
+        userService.closeConnection();
     }
 }

@@ -1,7 +1,6 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
-import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.util.Util;
 
 import java.sql.*;
@@ -13,7 +12,11 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public UserDaoJDBCImpl() {
         util = new Util();
-        autoCommitOff();
+        try {
+            util.getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         createSchema();
     }
 
@@ -22,10 +25,14 @@ public class UserDaoJDBCImpl implements UserDao {
                 .prepareStatement("CREATE TABLE users (id INT AUTO_INCREMENT primary key," +
                         " NAME varchar(255),LASTNAME varchar(255), AGE INT )")) {
             preparedStatement.execute();
-            commit();
+            util.getConnection().commit();
         } catch (SQLException e) {
             System.out.println("Table 'users' already exists");
-            rollBack();
+            try {
+                util.getConnection().rollback();
+            } catch (SQLException r) {
+                e.printStackTrace();
+            }
             cleanUsersTable();
         }
     }
@@ -34,10 +41,14 @@ public class UserDaoJDBCImpl implements UserDao {
         try (PreparedStatement preparedStatement = util.getConnection()
                 .prepareStatement("DROP TABLE if exists users")) {
             preparedStatement.execute();
-            commit();
+            util.getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            rollBack();
+            try {
+                util.getConnection().rollback();
+            } catch (SQLException r) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -46,11 +57,15 @@ public class UserDaoJDBCImpl implements UserDao {
                 .getConnection().prepareStatement("INSERT INTO users (NAME, LASTNAME, AGE) VALUES ("
                         + "'" + name + "'" + " , " + "'" + lastName + "'" + "," + age + ")")) {
             preparedStatement.execute();
-            commit();
+            util.getConnection().commit();
             System.out.println("User с именем – " + name + " добавлен в базу данных");
         } catch (SQLException e) {
             e.printStackTrace();
-            rollBack();
+            try {
+                util.getConnection().rollback();
+            } catch (SQLException r) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -58,10 +73,14 @@ public class UserDaoJDBCImpl implements UserDao {
         try (PreparedStatement preparedStatement = util.getConnection()
                 .prepareStatement("DELETE FROM users WHERE id =" + id)) {
             preparedStatement.execute();
-            commit();
+            util.getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            rollBack();
+            try {
+                util.getConnection().rollback();
+            } catch (SQLException r) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -69,7 +88,7 @@ public class UserDaoJDBCImpl implements UserDao {
         List<User> users = new ArrayList<>();
         try (PreparedStatement preparedStatement = util.getConnection().prepareStatement("SELECT * FROM users")) {
             ResultSet rSet = preparedStatement.executeQuery();
-            commit();
+            util.getConnection().commit();
             while (rSet.next()) {
                 User user = new User(rSet.getInt(1)
                         ,rSet.getString(2),
@@ -79,7 +98,11 @@ public class UserDaoJDBCImpl implements UserDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            rollBack();
+            try {
+                util.getConnection().rollback();
+            } catch (SQLException r) {
+                e.printStackTrace();
+            }
         }
         return users;
     }
@@ -87,27 +110,14 @@ public class UserDaoJDBCImpl implements UserDao {
     public void cleanUsersTable() {
         try (PreparedStatement preparedStatement = util.getConnection().prepareStatement("DELETE FROM users")) {
             preparedStatement.execute();
-            commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            rollBack();
-        }
-    }
-
-    public void commit() {
-        try {
             util.getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            rollBack();
-        }
-    }
-
-    public void rollBack() {
-        try {
-            util.getConnection().rollback();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            try {
+                util.getConnection().rollback();
+            } catch (SQLException r) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -116,18 +126,14 @@ public class UserDaoJDBCImpl implements UserDao {
         PreparedStatement useNewSchema = util.getConnection().prepareStatement("USE UsersZadaniye")) {
             schema.executeUpdate();
             useNewSchema.executeUpdate();
-            commit();
+            util.getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            rollBack();
-        }
-    }
-
-    public void autoCommitOff () {
-        try {
-            util.getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            try {
+                util.getConnection().rollback();
+            } catch (SQLException r) {
+                e.printStackTrace();
+            }
         }
     }
 
